@@ -81,7 +81,12 @@ value = st.number_input(" Enter value", min_value=0.0, format="%.4f")
 # Convert button
 if st.button(" Convert Now"):
     try:
-        result = (value * ureg(from_unit)).to(to_unit).magnitude
+        # Special handling for temperature conversion
+        if category == "Temperature":
+            result = ureg.Quantity(value, from_unit).to(to_unit).magnitude
+        else:
+            result = (value * ureg(from_unit)).to(to_unit).magnitude
+
         st.success(f"✅ {value} {from_unit} = {result:.4f} {to_unit}")
-    except:
-        st.error("❌ Invalid conversion! Try another unit.")
+    except Exception as e:
+        st.error(f"❌ Invalid conversion! Try another unit. {e}")
